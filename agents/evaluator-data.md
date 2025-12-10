@@ -5,7 +5,7 @@ description: |
   Focus: logical consistency, edge cases, unintended consequences.
 
   Domain evaluator - invoked for technical and analytical tasks.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Commander Data

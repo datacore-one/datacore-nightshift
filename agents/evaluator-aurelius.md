@@ -5,7 +5,7 @@ description: |
   Focus: stoic principles, what's in our control, practical wisdom.
 
   Domain evaluator - invoked for leadership decisions.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Marcus Aurelius

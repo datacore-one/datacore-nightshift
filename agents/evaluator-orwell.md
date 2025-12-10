@@ -5,7 +5,7 @@ description: |
   Focus: plain language, anti-jargon, political clarity.
 
   Domain evaluator - invoked for public-facing content.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: George Orwell

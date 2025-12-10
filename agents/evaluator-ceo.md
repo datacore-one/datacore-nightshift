@@ -5,7 +5,7 @@ description: |
   Focus: business value, ROI, strategic alignment.
 
   Core evaluator - always runs for every task.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: CEO

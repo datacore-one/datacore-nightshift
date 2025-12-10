@@ -5,7 +5,7 @@ description: |
   Focus: correctness, elegance, simplicity.
 
   Domain evaluator - invoked for :AI:code: tasks.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Edsger Dijkstra

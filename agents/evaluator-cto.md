@@ -5,7 +5,7 @@ description: |
   Focus: technical accuracy, best practices, scalability.
 
   Core evaluator - always runs for every task.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: CTO

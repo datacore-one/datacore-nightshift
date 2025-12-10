@@ -126,8 +126,20 @@ def parse_org_file(file_path: Path) -> List[OrgTask]:
     return tasks
 
 
-def find_ai_tasks(data_dir: Path, states: List[str] = None) -> List[OrgTask]:
-    """Find all :AI: tagged tasks in the data directory."""
+def find_ai_tasks(
+    data_dir: Path,
+    states: List[str] = None,
+    spaces: List[str] = None,
+    exclude_spaces: List[str] = None
+) -> List[OrgTask]:
+    """Find all :AI: tagged tasks in the data directory.
+
+    Args:
+        data_dir: Root data directory
+        states: Task states to include (default: TODO, NEXT)
+        spaces: Only include tasks from these spaces (default: all)
+        exclude_spaces: Exclude tasks from these spaces (default: none)
+    """
     if states is None:
         states = ['TODO', 'NEXT']
 
@@ -138,6 +150,19 @@ def find_ai_tasks(data_dir: Path, states: List[str] = None) -> List[OrgTask]:
         # Skip archive files
         if 'archive' in str(org_file).lower():
             continue
+
+        # Check space filtering
+        file_path_str = str(org_file)
+
+        # If spaces specified, only include matching spaces
+        if spaces:
+            if not any(f"/{space}/" in file_path_str or file_path_str.startswith(f"{space}/") for space in spaces):
+                continue
+
+        # If exclude_spaces specified, skip matching spaces
+        if exclude_spaces:
+            if any(f"/{space}/" in file_path_str or f"/{space}" in file_path_str for space in exclude_spaces):
+                continue
 
         tasks = parse_org_file(org_file)
         for task in tasks:

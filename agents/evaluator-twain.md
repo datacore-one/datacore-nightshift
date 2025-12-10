@@ -5,7 +5,7 @@ description: |
   Focus: clarity, brevity, authenticity, cutting the fluff.
 
   Domain evaluator - invoked for :AI:content: tasks.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Mark Twain

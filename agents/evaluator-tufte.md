@@ -5,7 +5,7 @@ description: |
   Focus: clarity, data-ink ratio, avoiding chartjunk.
 
   Domain evaluator - invoked for :AI:data: tasks.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Edward Tufte
