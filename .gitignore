@@ -1,0 +1,15 @@
+# Layered context (DIP-0002)
+CLAUDE.md
+CLAUDE.space.md
+CLAUDE.local.md
+*.local.md
+*.space.md
+
+# Local config
+*.local.yaml
+settings.local.yaml
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo

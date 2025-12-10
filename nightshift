@@ -1,0 +1,83 @@
+#!/bin/bash
+# =============================================================================
+# Nightshift CLI
+# Autonomous AI task execution with quality gates
+#
+# Usage: nightshift <command> [args]
+#
+# Commands:
+#   run [--command=X]  Execute nightshift pipeline (or specific command)
+#   queue              Show pending :AI: tasks
+#   status             Show nightshift status
+#   test               Run with a single test task
+# =============================================================================
+
+set -e
+
+# Determine script directory (resolve symlinks)
+if [[ -L "$0" ]]; then
+    SCRIPT_PATH=$(readlink -f "$0")
+else
+    SCRIPT_PATH="$0"
+fi
+NIGHTSHIFT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
+
+# Data directory (configurable via env)
+DATA_DIR="${NIGHTSHIFT_DATA_DIR:-$HOME/Data}"
+
+# Environment file
+ENV_FILE="${NIGHTSHIFT_ENV_FILE:-$HOME/config/nightshift.env}"
+if [[ -f "$ENV_FILE" ]]; then
+    export $(grep -v '^#' "$ENV_FILE" | xargs)
+fi
+
+# Add lib to Python path
+export PYTHONPATH="$NIGHTSHIFT_DIR/lib:$PYTHONPATH"
+
+# Check Python available
+if ! command -v python3 &> /dev/null; then
+    echo "Error: python3 not found"
+    exit 1
+fi
+
+# Command routing
+case "${1:-}" in
+    run)
+        shift
+        python3 "$NIGHTSHIFT_DIR/lib/run.py" "$DATA_DIR" "$@"
+        ;;
+    queue)
+        shift
+        python3 "$NIGHTSHIFT_DIR/lib/queue.py" "$DATA_DIR" "$@"
+        ;;
+    status)
+        shift
+        python3 "$NIGHTSHIFT_DIR/lib/status.py" "$DATA_DIR" "$@"
+        ;;
+    test)
+        shift
+        python3 "$NIGHTSHIFT_DIR/lib/run.py" "$DATA_DIR" --test "$@"
+        ;;
+    help|--help|-h)
+        echo "Nightshift - Autonomous AI Task Execution"
+        echo ""
+        echo "Usage: nightshift <command> [options]"
+        echo ""
+        echo "Commands:"
+        echo "  run              Execute full nightshift pipeline"
+        echo "  run --command=X  Execute a specific command (e.g., /today)"
+        echo "  run --test       Execute a single test task"
+        echo "  queue            Show pending :AI: tasks"
+        echo "  status           Show nightshift execution status"
+        echo ""
+        echo "Environment:"
+        echo "  NIGHTSHIFT_DATA_DIR   Data directory (default: ~/Data)"
+        echo "  NIGHTSHIFT_ENV_FILE   Environment file (default: ~/config/nightshift.env)"
+        echo "  ANTHROPIC_API_KEY     Required for Claude CLI"
+        ;;
+    *)
+        echo "Usage: nightshift {run|queue|status|test|help}"
+        echo "Run 'nightshift help' for more information"
+        exit 1
+        ;;
+esac
