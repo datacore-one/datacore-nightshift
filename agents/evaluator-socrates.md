@@ -5,7 +5,7 @@ description: |
   Focus: dialectic method, exposing contradictions, intellectual humility.
 
   Domain evaluator - invoked for :AI:strategy: and decisions.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Socrates

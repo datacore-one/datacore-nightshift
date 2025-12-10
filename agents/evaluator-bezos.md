@@ -5,7 +5,7 @@ description: |
   Focus: customer value, data-driven decisions, clear thinking.
 
   Domain evaluator - invoked for :AI:pm: and :AI:strategy: tasks.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Jeff Bezos

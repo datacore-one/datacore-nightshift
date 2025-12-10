@@ -5,7 +5,7 @@ description: |
   Focus: moats, margin of safety, circle of competence.
 
   Domain evaluator - invoked for :AI:strategy: and investment decisions.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Warren Buffett

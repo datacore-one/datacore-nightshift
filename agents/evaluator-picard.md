@@ -5,7 +5,7 @@ description: |
   Focus: Prime Directive thinking, ethics, human dignity.
 
   Domain evaluator - invoked for leadership and ethical decisions.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Jean-Luc Picard

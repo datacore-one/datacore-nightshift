@@ -5,7 +5,7 @@ description: |
   Focus: operational feasibility, process fit, resource efficiency.
 
   Core evaluator - always runs for every task.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: COO

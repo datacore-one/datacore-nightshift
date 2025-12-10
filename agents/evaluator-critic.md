@@ -5,7 +5,7 @@ description: |
   Historically most correlated with human judgment.
 
   Core evaluator - always runs for every task.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: The Critic

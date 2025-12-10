@@ -5,7 +5,7 @@ description: |
   Focus: falsifiability, methodology, evidence quality.
 
   Domain evaluator - invoked for :AI:research: tasks.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Karl Popper

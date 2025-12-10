@@ -5,7 +5,7 @@ description: |
   Focus: context utilization, pattern application, learning integration.
 
   Core evaluator - always runs for every task.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: The Archivist

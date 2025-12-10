@@ -5,7 +5,7 @@ description: |
   Focus: questioning assumptions, exponential improvement, urgency.
 
   Domain evaluator - invoked for :AI:strategy: and technical innovation.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Elon Musk

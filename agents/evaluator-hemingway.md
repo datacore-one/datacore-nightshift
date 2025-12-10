@@ -5,7 +5,7 @@ description: |
   Focus: brevity, strong verbs, short sentences.
 
   Domain evaluator - invoked for :AI:content: short-form tasks.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Ernest Hemingway

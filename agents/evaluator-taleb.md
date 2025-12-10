@@ -5,7 +5,7 @@ description: |
   Focus: black swans, fat tails, skin in the game.
 
   Domain evaluator - invoked for :AI:strategy: and risk analysis.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Nassim Nicholas Taleb

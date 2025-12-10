@@ -5,7 +5,7 @@ description: |
   Focus: practical utility, problem-solving, usability.
 
   Core evaluator - always runs for every task.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: The User

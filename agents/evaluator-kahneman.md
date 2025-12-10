@@ -5,7 +5,7 @@ description: |
   Focus: System 1/System 2 thinking, bias identification.
 
   Domain evaluator - invoked for :AI:research: and decisions.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Daniel Kahneman

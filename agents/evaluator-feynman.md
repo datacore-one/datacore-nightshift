@@ -5,7 +5,7 @@ description: |
   Focus: simplicity, analogies, honest uncertainty.
 
   Domain evaluator - invoked for :AI:data: technical documentation.
-model: haiku
+model: sonnet
 ---
 
 # Evaluator: Richard Feynman

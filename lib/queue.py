@@ -82,10 +82,26 @@ def calculate_priority(task: OrgTask) -> float:
     return round(score, 2)
 
 
+def load_config(data_dir: Path) -> dict:
+    """Load nightshift config from config.local.yaml if present."""
+    import yaml
+    config_path = data_dir / '.datacore' / 'modules' / 'nightshift' / 'config.local.yaml'
+    if config_path.exists():
+        with open(config_path) as f:
+            return yaml.safe_load(f) or {}
+    return {}
+
+
 def build_queue(data_dir: Path, limit: Optional[int] = None) -> List[QueuedTask]:
     """Build execution queue from :AI: tasks, sorted by priority."""
+    # Load config for space filtering
+    config = load_config(data_dir)
+    nightshift_config = config.get('nightshift', {})
+    spaces = nightshift_config.get('spaces')
+    exclude_spaces = nightshift_config.get('exclude_spaces')
+
     # Find all eligible tasks
-    tasks = find_ai_tasks(data_dir, states=['TODO', 'NEXT'])
+    tasks = find_ai_tasks(data_dir, states=['TODO', 'NEXT'], spaces=spaces, exclude_spaces=exclude_spaces)
 
     # Filter out tasks that are already being executed
     eligible = []
