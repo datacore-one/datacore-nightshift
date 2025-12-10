@@ -1,0 +1,27 @@
+# Nightshift Schedule Configuration
+# Cron syntax: minute hour day-of-month month day-of-week
+
+schedules:
+  - id: nightly-execution
+    description: "Process overnight task queue"
+    schedule: "0 0 * * *"  # Midnight
+    command: "nightshift run"
+    enabled: true
+
+  - id: early-morning-batch
+    description: "Final batch before /today"
+    schedule: "0 6 * * *"  # 6am
+    command: "nightshift run --final"
+    enabled: true
+
+  - id: queue-check
+    description: "Check for new tasks (continuous mode)"
+    schedule: "*/30 * * * *"  # Every 30 min
+    command: "nightshift check-queue"
+    enabled: false  # Enable for 24/7 mode
+
+  - id: weekly-insights
+    description: "Generate weekly analytics report"
+    schedule: "0 9 * * 1"  # Monday 9am
+    command: "nightshift insights --weekly"
+    enabled: true

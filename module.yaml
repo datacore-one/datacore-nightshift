@@ -1,0 +1,105 @@
+name: nightshift
+version: "0.1.0"
+description: |
+  Autonomous task execution system that processes :AI: tagged tasks
+  with quality gates, multi-persona evaluation, and continuous learning.
+
+  Tagline: "Tag tasks before bed. Wake up to completed work."
+
+author: datacore
+repository: https://github.com/datacore-one/module-nightshift
+
+dependencies:
+  - core@>=1.0.0
+
+provides:
+  commands:
+    - nightshift-status  # Check queue, executions, server status
+  agents:
+    # Core orchestration
+    - nightshift-orchestrator  # Main coordinator for autonomous execution
+    - queue-optimizer          # Prioritizes tasks by impact, effort, urgency
+    - context-enhancer         # Builds rich context from knowledge base
+    - learning-extractor       # Captures patterns for improvement
+    # Core evaluators (always run)
+    - evaluator-user           # Does it solve the user's problem?
+    - evaluator-critic         # What's wrong or missing?
+    - evaluator-ceo            # Strategic value assessment
+    - evaluator-cto            # Technical quality review
+    - evaluator-coo            # Operational fit check
+    - evaluator-archivist      # Was knowledge base used well?
+    # Domain evaluators (writing)
+    - evaluator-hemingway      # Clarity and concision
+    - evaluator-twain          # Voice and storytelling
+    - evaluator-orwell         # Political clarity, propaganda detection
+    # Domain evaluators (business)
+    - evaluator-bezos          # Customer obsession, long-term thinking
+    - evaluator-buffett        # Value investing, risk assessment
+    - evaluator-musk           # First principles, moonshot thinking
+    # Domain evaluators (science/logic)
+    - evaluator-feynman        # Explanation quality, first principles
+    - evaluator-dijkstra       # Algorithmic elegance, correctness
+    - evaluator-popper         # Falsifiability, scientific rigor
+    - evaluator-kahneman       # Cognitive bias detection
+    - evaluator-taleb          # Antifragility, risk/uncertainty
+    # Domain evaluators (philosophy)
+    - evaluator-socrates       # Questioning assumptions
+    - evaluator-aurelius       # Stoic practicality
+    # Domain evaluators (presentation)
+    - evaluator-tufte          # Data visualization, information design
+    # Domain evaluators (fictional perspectives)
+    - evaluator-picard         # Leadership, ethics, diplomacy
+    - evaluator-data           # Pure logic, precision, objectivity
+
+settings:
+  enabled:
+    description: "Enable nightshift task processing"
+    default: true
+
+  execution_preference:
+    description: "Order of execution targets to try"
+    default: ["server", "local"]
+
+  quality_threshold:
+    description: "Minimum score for auto-approval"
+    default: 0.80
+
+  max_retries:
+    description: "Maximum revision attempts before human review"
+    default: 2
+
+  context_quality_threshold:
+    description: "Minimum context quality to proceed"
+    default: 0.60
+
+  budget_daily_usd:
+    description: "Daily cost limit in USD (0 = unlimited)"
+    default: 0
+
+  evaluators_core:
+    description: "Core evaluators that always run"
+    default: ["user", "critic", "ceo", "cto", "coo", "archivist"]
+
+hooks:
+  tomorrow: "commands/tomorrow-hook.md"
+  today: "commands/today-hook.md"
+  post_install: |
+    echo "Nightshift installed successfully."
+    echo ""
+    echo "Tag tasks before bed. Wake up to completed work."
+    echo ""
+    echo "Quick start:"
+    echo "  1. Tag tasks with :AI: in your org files"
+    echo "  2. Run /nightshift-status to see queue"
+    echo "  3. Nightshift runs overnight (or on-demand)"
+    echo ""
+    echo "Configure in ~/.datacore/settings.local.yaml:"
+    echo "  nightshift:"
+    echo "    quality_threshold: 0.80"
+    echo "    evaluators_core: [user, critic, ceo, cto, coo, archivist]"
+
+use_cases:
+  - "Process :AI: tagged tasks overnight autonomously"
+  - "Quality-gate outputs before delivering to user"
+  - "Learn from execution patterns to improve over time"
+  - "Run scheduled tasks on server or locally"
