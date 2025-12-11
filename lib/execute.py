@@ -23,10 +23,36 @@ class ExecutionResult:
 
 
 def build_task_prompt(task: OrgTask, context: str = "") -> str:
-    """Build the prompt for Claude to execute this task."""
+    """
+    Build the prompt for Claude to execute this task.
+
+    Uses specialized agents based on task type:
+    - :AI:research: → gtd-research-processor agent
+    - :AI:content: → gtd-content-writer agent
+    - :AI:pm: → gtd-project-manager agent
+    - :AI:data: → gtd-data-analyzer agent
+    - :AI: (general) → ai-task-executor agent
+    """
     prompt_parts = []
 
-    # Task header
+    # Agent mapping
+    agent_map = {
+        ':AI:research:': 'gtd-research-processor',
+        ':AI:content:': 'gtd-content-writer',
+        ':AI:pm:': 'gtd-project-manager',
+        ':AI:data:': 'gtd-data-analyzer',
+        ':AI:code:': None,  # No specialized code agent yet
+        ':AI:': 'ai-task-executor',
+    }
+
+    tag = task.ai_tag or ':AI:'
+    agent = agent_map.get(tag, 'ai-task-executor')
+
+    # Instruction to use the specialized agent
+    prompt_parts.append(f"Execute this task using the Task tool with subagent_type='{agent}':")
+    prompt_parts.append("")
+
+    # Task details
     prompt_parts.append(f"# Task: {task.title}")
     prompt_parts.append(f"Task ID: {task.id}")
     prompt_parts.append(f"Type: {task.ai_tag}")
@@ -44,25 +70,11 @@ def build_task_prompt(task: OrgTask, context: str = "") -> str:
         prompt_parts.append(context)
         prompt_parts.append("")
 
-    # Instructions based on task type
-    task_type_instructions = {
-        ':AI:research:': "Research this topic thoroughly. Provide sources and citations where possible.",
-        ':AI:content:': "Generate high-quality content following best practices. Be clear, concise, and engaging.",
-        ':AI:data:': "Analyze the data and provide insights. Include visualizations or structured output where helpful.",
-        ':AI:pm:': "Provide project management analysis. Consider timelines, risks, and dependencies.",
-        ':AI:code:': "Write clean, well-documented code. Include tests if appropriate.",
-        ':AI:': "Complete this task to the best of your ability.",
-    }
-
-    tag = task.ai_tag or ':AI:'
-    instructions = task_type_instructions.get(tag, task_type_instructions[':AI:'])
-
-    prompt_parts.append("## Instructions")
-    prompt_parts.append(instructions)
-    prompt_parts.append("")
-
-    prompt_parts.append("## Output")
-    prompt_parts.append("Provide your complete response below:")
+    # Output requirements
+    prompt_parts.append("## Requirements")
+    prompt_parts.append("- Use the specialized agent to complete this task")
+    prompt_parts.append("- Write the output to a markdown file in the appropriate 0-inbox/ directory")
+    prompt_parts.append("- Return the path to the output file when done")
 
     return '\n'.join(prompt_parts)
 
@@ -82,12 +94,13 @@ def execute_task(task: OrgTask, data_dir: Path, context: str = "") -> ExecutionR
     try:
         # Run Claude CLI with the prompt
         # Using -p for print mode (non-interactive)
+        # 30 minute timeout for agent-based tasks (complex research can take time)
         result = subprocess.run(
             ['claude', '-p', prompt],
             cwd=data_dir,
             capture_output=True,
             text=True,
-            timeout=600  # 10 minute timeout
+            timeout=1800  # 30 minute timeout
         )
 
         duration = time.time() - start_time
@@ -111,8 +124,8 @@ def execute_task(task: OrgTask, data_dir: Path, context: str = "") -> ExecutionR
         return ExecutionResult(
             success=False,
             output="",
-            error="Execution timed out after 10 minutes",
-            duration_seconds=600
+            error="Execution timed out after 30 minutes",
+            duration_seconds=1800
         )
     except Exception as e:
         return ExecutionResult(
