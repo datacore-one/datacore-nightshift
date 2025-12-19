@@ -1,0 +1,19 @@
+[Unit]
+Description=Nightshift Today Command Execution
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=gregor
+Group=gregor
+WorkingDirectory=/home/gregor/Data
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+EnvironmentFile=/home/gregor/config/nightshift.env
+ExecStart=/home/gregor/Data/.datacore/modules/nightshift/nightshift run --command=/today
+TimeoutStartSec=600
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

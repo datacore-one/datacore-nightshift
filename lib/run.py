@@ -17,6 +17,7 @@ from execute import execute_task, execute_command, ExecutionResult
 from evaluate import evaluate_output, EvaluationResult
 from output import write_output, generate_exec_id
 from journal import write_nightshift_summary
+from summary import write_summary_file, generate_journal_summary
 
 
 def run_command_mode(data_dir: Path, command: str) -> bool:
@@ -136,7 +137,7 @@ def run_task_mode(
 
         # Write output to 0-inbox
         print("  - Writing output...")
-        output_path = write_output(
+        output_path, write_success = write_output(
             task=task,
             output=exec_result.output,
             evaluation=eval_result,
@@ -145,6 +146,17 @@ def run_task_mode(
             duration_seconds=exec_result.duration_seconds,
             tokens_used=exec_result.tokens_used
         )
+
+        if not write_success:
+            print(f"  - FAILED: Could not write output to {output_path}")
+            complete_task(task, data_dir, 'failed', 0.0, '')
+            failed.append({
+                'title': task.title,
+                'space': task.space,
+                'error': f'Output write failed: {output_path}'
+            })
+            git_commit_push(data_dir, f"nightshift: write-fail {task.id}")
+            continue
 
         # Update task state
         print("  - Completing task...")
@@ -175,9 +187,33 @@ def run_task_mode(
 
         print(f"  - Done!")
 
-    # Write journal summary
+    # Write summary report and journal entries
     total_duration = time.time() - start_time
-    print(f"\n[6/7] Writing journal entries...")
+    print(f"\n[6/7] Writing summary report and journal entries...")
+
+    # Write consolidated summary file to each space's 0-inbox
+    spaces_with_tasks = set()
+    for task in completed + review + failed:
+        space = task.get('space') or '0-personal'
+        spaces_with_tasks.add(space)
+
+    for space in spaces_with_tasks:
+        space_completed = [t for t in completed if (t.get('space') or '0-personal') == space]
+        space_review = [t for t in review if (t.get('space') or '0-personal') == space]
+        space_failed = [t for t in failed if (t.get('space') or '0-personal') == space]
+
+        if space_completed or space_review or space_failed:
+            write_summary_file(
+                data_dir=data_dir,
+                space=space,
+                completed_tasks=space_completed,
+                failed_tasks=space_failed,
+                review_tasks=space_review,
+                total_duration=total_duration,
+                total_tokens=total_tokens
+            )
+
+    # Write journal entries (existing behavior)
     write_nightshift_summary(
         data_dir=data_dir,
         completed_tasks=completed,

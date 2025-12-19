@@ -1,0 +1,11 @@
+[Unit]
+Description=Nightshift Today Briefing Timer
+Requires=nightshift-today.service
+
+[Timer]
+# Generate morning briefing at 7am
+OnCalendar=*-*-* 07:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
