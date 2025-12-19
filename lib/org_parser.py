@@ -62,7 +62,7 @@ def parse_org_file(file_path: Path) -> List[OrgTask]:
 
         # Match heading: * TODO Title :tag1:tag2:
         heading_match = re.match(
-            r'^(\*+)\s+(TODO|NEXT|WORKING|DONE|REVIEW|FAILED|WAITING)\s+(.+?)(\s+:[\w:]+:)?\s*$',
+            r'^(\*+)\s+(TODO|NEXT|WORKING|DONE|REVIEW|FAILED|WAITING|QUEUED|EXECUTING)\s+(.+?)(\s+:[\w:]+:)?\s*$',
             line
         )
 
@@ -236,7 +236,7 @@ def update_task_state(task: OrgTask, new_state: str) -> str:
 
     # Replace the state
     new_line = re.sub(
-        r'^(\*+\s+)(TODO|NEXT|WORKING|DONE|REVIEW|FAILED|WAITING)(\s+)',
+        r'^(\*+\s+)(TODO|NEXT|WORKING|DONE|REVIEW|FAILED|WAITING|QUEUED|EXECUTING)(\s+)',
         rf'\g<1>{new_state}\3',
         line
     )

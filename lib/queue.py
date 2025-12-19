@@ -92,16 +92,30 @@ def load_config(data_dir: Path) -> dict:
     return {}
 
 
-def build_queue(data_dir: Path, limit: Optional[int] = None) -> List[QueuedTask]:
-    """Build execution queue from :AI: tasks, sorted by priority."""
+def build_queue(data_dir: Path, limit: Optional[int] = None, include_pending: bool = False) -> List[QueuedTask]:
+    """Build execution queue from nightshift.org QUEUED tasks, sorted by priority.
+
+    Args:
+        data_dir: Root data directory
+        limit: Maximum number of tasks to return
+        include_pending: If True, also include TODO/NEXT :AI: tasks not yet moved to nightshift.org
+    """
     # Load config for space filtering
     config = load_config(data_dir)
     nightshift_config = config.get('nightshift', {})
     spaces = nightshift_config.get('spaces')
     exclude_spaces = nightshift_config.get('exclude_spaces')
 
-    # Find all eligible tasks
-    tasks = find_ai_tasks(data_dir, states=['TODO', 'NEXT'], spaces=spaces, exclude_spaces=exclude_spaces)
+    # Primary: Find QUEUED tasks in nightshift.org (ready for execution)
+    tasks = find_ai_tasks(data_dir, states=['QUEUED'], spaces=spaces, exclude_spaces=exclude_spaces)
+
+    # Optionally include :AI: tasks from other files that haven't been queued yet
+    if include_pending:
+        pending_tasks = find_ai_tasks(data_dir, states=['TODO', 'NEXT'], spaces=spaces, exclude_spaces=exclude_spaces)
+        # Filter to only tasks NOT in nightshift.org (those are the pending ones)
+        for task in pending_tasks:
+            if 'nightshift.org' not in str(task.file_path):
+                tasks.append(task)
 
     # Filter out tasks that are already being executed
     eligible = []
