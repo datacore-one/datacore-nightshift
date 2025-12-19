@@ -6,7 +6,7 @@ Quick reference for server administration.
 
 | Property | Value |
 |----------|-------|
-| IP | `209.38.243.88` |
+| IP | `209.38.195.208` |
 | User | `gregor` |
 | Data path | `/home/gregor/Data` |
 | Config | `/home/gregor/config/nightshift.env` |
@@ -15,10 +15,10 @@ Quick reference for server administration.
 
 ```bash
 # Interactive session
-ssh gregor@209.38.243.88
+ssh gregor@209.38.195.208
 
 # Quick command
-ssh gregor@209.38.243.88 'command here'
+ssh gregor@209.38.195.208 'command here'
 ```
 
 ## Systemd Timers (Schedules)
@@ -32,7 +32,7 @@ ssh gregor@209.38.243.88 'command here'
 
 ```bash
 # SSH to server and check
-ssh gregor@209.38.243.88 'systemctl list-timers | grep nightshift'
+ssh gregor@209.38.195.208 'systemctl list-timers | grep nightshift'
 
 # Or use the CLI
 nightshift scheduler status
@@ -42,23 +42,23 @@ nightshift scheduler status
 
 ```bash
 # Overnight execution logs
-ssh gregor@209.38.243.88 'journalctl -u nightshift-overnight.service --since today'
+ssh gregor@209.38.195.208 'journalctl -u nightshift-overnight.service --since today'
 
 # Today briefing logs
-ssh gregor@209.38.243.88 'journalctl -u nightshift-today.service --since today'
+ssh gregor@209.38.195.208 'journalctl -u nightshift-today.service --since today'
 
 # Follow logs in real-time
-ssh gregor@209.38.243.88 'journalctl -u nightshift-overnight.service -f'
+ssh gregor@209.38.195.208 'journalctl -u nightshift-overnight.service -f'
 ```
 
 ### Manual Trigger
 
 ```bash
 # Run overnight tasks now
-ssh gregor@209.38.243.88 'sudo systemctl start nightshift-overnight.service'
+ssh gregor@209.38.195.208 'sudo systemctl start nightshift-overnight.service'
 
 # Run /today briefing now
-ssh gregor@209.38.243.88 'sudo systemctl start nightshift-today.service'
+ssh gregor@209.38.195.208 'sudo systemctl start nightshift-today.service'
 ```
 
 ## Scheduler CLI
@@ -82,12 +82,12 @@ Server uses separate repos:
 
 ```bash
 # Check sync status on server
-ssh gregor@209.38.243.88 'cd ~/Data && git status'
-ssh gregor@209.38.243.88 'cd ~/Data/1-datafund && git status'
+ssh gregor@209.38.195.208 'cd ~/Data && git status'
+ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git status'
 
 # Manual pull
-ssh gregor@209.38.243.88 'cd ~/Data && git pull'
-ssh gregor@209.38.243.88 'cd ~/Data/1-datafund && git pull'
+ssh gregor@209.38.195.208 'cd ~/Data && git pull'
+ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git pull'
 ```
 
 ## Troubleshooting
@@ -96,29 +96,29 @@ ssh gregor@209.38.243.88 'cd ~/Data/1-datafund && git pull'
 
 1. Check timers are active:
    ```bash
-   ssh gregor@209.38.243.88 'systemctl list-timers | grep nightshift'
+   ssh gregor@209.38.195.208 'systemctl list-timers | grep nightshift'
    ```
 
 2. Check for errors in logs:
    ```bash
-   ssh gregor@209.38.243.88 'journalctl -u nightshift-overnight.service -n 50'
+   ssh gregor@209.38.195.208 'journalctl -u nightshift-overnight.service -n 50'
    ```
 
 3. Check API key is set:
    ```bash
-   ssh gregor@209.38.243.88 'grep ANTHROPIC ~/config/nightshift.env'
+   ssh gregor@209.38.195.208 'grep ANTHROPIC ~/config/nightshift.env'
    ```
 
 4. Test manual run:
    ```bash
-   ssh gregor@209.38.243.88 'cd ~/Data && ./.datacore/modules/nightshift/nightshift status'
+   ssh gregor@209.38.195.208 'cd ~/Data && ./.datacore/modules/nightshift/nightshift status'
    ```
 
 ### Outputs Not Syncing to Local
 
 1. Verify server committed and pushed:
    ```bash
-   ssh gregor@209.38.243.88 'cd ~/Data/1-datafund && git log --oneline -5'
+   ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git log --oneline -5'
    ```
 
 2. Pull locally:

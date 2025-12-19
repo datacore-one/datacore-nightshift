@@ -12,9 +12,9 @@ Nightshift processes `:AI:` tagged tasks autonomously, applying multi-perspectiv
 
 | Property | Value |
 |----------|-------|
-| IP | `209.38.243.88` |
+| IP | `209.38.195.208` |
 | User | `gregor` |
-| SSH | `ssh gregor@209.38.243.88` |
+| SSH | `ssh gregor@209.38.195.208` |
 | Data path | `/home/gregor/Data` |
 | Config | `/home/gregor/config/nightshift.env` |
 
@@ -29,16 +29,16 @@ Nightshift processes `:AI:` tagged tasks autonomously, applying multi-perspectiv
 
 ```bash
 # Check timer status
-ssh gregor@209.38.243.88 'systemctl list-timers | grep nightshift'
+ssh gregor@209.38.195.208 'systemctl list-timers | grep nightshift'
 
 # View recent logs
-ssh gregor@209.38.243.88 'journalctl -u nightshift-overnight.service --since today'
+ssh gregor@209.38.195.208 'journalctl -u nightshift-overnight.service --since today'
 
 # Manual trigger
-ssh gregor@209.38.243.88 'sudo systemctl start nightshift-overnight.service'
+ssh gregor@209.38.195.208 'sudo systemctl start nightshift-overnight.service'
 
 # Check nightshift status
-ssh gregor@209.38.243.88 'cd ~/Data && ./.datacore/modules/nightshift/nightshift status'
+ssh gregor@209.38.195.208 'cd ~/Data && ./.datacore/modules/nightshift/nightshift status'
 ```
 
 ### Repo Architecture (Critical)
@@ -51,7 +51,7 @@ This matches local architecture. If 1-datafund is part of main repo (gitignored)
 
 ```bash
 # Verify repos are separate
-ssh gregor@209.38.243.88 'cd ~/Data/1-datafund && git remote -v'
+ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git remote -v'
 # Should show: github.com:datacore-one/datafund-space.git
 ```
 
@@ -103,13 +103,13 @@ All outputs go to `[space]/0-inbox/nightshift-{id}-{type}.md`
 
 ### Tasks Not Executing
 
-1. Check timers: `ssh gregor@209.38.243.88 'systemctl list-timers | grep nightshift'`
-2. Check logs: `ssh gregor@209.38.243.88 'journalctl -u nightshift-overnight.service -n 50'`
-3. Check API key: `ssh gregor@209.38.243.88 'grep ANTHROPIC ~/config/nightshift.env'`
+1. Check timers: `ssh gregor@209.38.195.208 'systemctl list-timers | grep nightshift'`
+2. Check logs: `ssh gregor@209.38.195.208 'journalctl -u nightshift-overnight.service -n 50'`
+3. Check API key: `ssh gregor@209.38.195.208 'grep ANTHROPIC ~/config/nightshift.env'`
 
 ### Outputs Not Syncing
 
-1. Verify server pushed: `ssh gregor@209.38.243.88 'cd ~/Data/1-datafund && git log --oneline -3'`
+1. Verify server pushed: `ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git log --oneline -3'`
 2. Pull locally: `cd ~/Data/1-datafund && git pull`
 3. Verify 1-datafund is separate repo on server (not part of main repo)
 
