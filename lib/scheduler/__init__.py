@@ -15,6 +15,7 @@ from .base import (
 )
 
 from .cron_adapter import CronAdapter
+from .systemd_adapter import SystemdAdapter
 
 __all__ = [
     "Schedule",
@@ -22,6 +23,7 @@ __all__ = [
     "SchedulerStatus",
     "SchedulerAdapter",
     "CronAdapter",
+    "SystemdAdapter",
     "detect_platform",
     "get_default_adapter",
     "load_schedules",

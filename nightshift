@@ -9,6 +9,7 @@
 #   run [--command=X]  Execute nightshift pipeline (or specific command)
 #   queue              Show pending :AI: tasks
 #   status             Show nightshift status
+#   scheduler          Manage scheduled execution (install, status, uninstall)
 #   test               Run with a single test task
 # =============================================================================
 
@@ -58,6 +59,10 @@ case "${1:-}" in
         shift
         python3 "$NIGHTSHIFT_DIR/lib/run.py" "$DATA_DIR" --test "$@"
         ;;
+    scheduler)
+        shift
+        python3 "$NIGHTSHIFT_DIR/lib/scheduler_cli.py" "$DATA_DIR" "$@"
+        ;;
     help|--help|-h)
         echo "Nightshift - Autonomous AI Task Execution"
         echo ""
@@ -69,6 +74,10 @@ case "${1:-}" in
         echo "  run --test       Execute a single test task"
         echo "  queue            Show pending :AI: tasks"
         echo "  status           Show nightshift execution status"
+        echo "  scheduler        Manage scheduled execution"
+        echo "    scheduler status    Show installed schedules"
+        echo "    scheduler install   Install schedules (auto-detect platform)"
+        echo "    scheduler uninstall Remove all schedules"
         echo ""
         echo "Environment:"
         echo "  NIGHTSHIFT_DATA_DIR   Data directory (default: ~/Data)"
@@ -76,7 +85,7 @@ case "${1:-}" in
         echo "  ANTHROPIC_API_KEY     Required for Claude CLI"
         ;;
     *)
-        echo "Usage: nightshift {run|queue|status|test|help}"
+        echo "Usage: nightshift {run|queue|status|scheduler|test|help}"
         echo "Run 'nightshift help' for more information"
         exit 1
         ;;

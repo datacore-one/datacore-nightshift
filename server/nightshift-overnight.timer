@@ -1,0 +1,15 @@
+[Unit]
+Description=Nightshift Overnight Execution Timer
+Requires=nightshift-overnight.service
+
+[Timer]
+# Execute at midnight and 6am
+OnCalendar=*-*-* 00:00:00
+OnCalendar=*-*-* 06:00:00
+# Run missed executions if server was down
+Persistent=true
+# Add random delay up to 5 minutes to avoid exact-time load spikes
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
