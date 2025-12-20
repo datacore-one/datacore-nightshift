@@ -76,19 +76,41 @@ nightshift scheduler uninstall --backend=systemd
 
 ## Git Sync
 
-Server uses separate repos:
-- Main datacore repo: `/home/gregor/Data`
-- Datafund space: `/home/gregor/Data/1-datafund` (separate repo)
+Server uses separate repos with different origins:
+
+| Space | Origin | Notes |
+|-------|--------|-------|
+| Root (`.datacore/`) | GitHub (datacore-one/datacore) | System only |
+| `0-personal/` | **This server** (self-hosted) | Private, no GitHub |
+| `1-datafund/` | GitHub (datafund-space) | Team collaboration |
+| `2-datacore/` | GitHub (datacore-space) | Team collaboration |
 
 ```bash
 # Check sync status on server
 ssh gregor@209.38.195.208 'cd ~/Data && git status'
+ssh gregor@209.38.195.208 'cd ~/Data/0-personal && git status'  # Self-hosted origin
 ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git status'
 
-# Manual pull
+# Manual pull (0-personal pulls from local pushes, not GitHub)
 ssh gregor@209.38.195.208 'cd ~/Data && git pull'
 ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git pull'
+
+# 0-personal is origin ON this server - local machine pushes here
 ```
+
+## GitHub CLI
+
+`gh` is installed for creating issues, PRs, and GitHub API operations:
+
+```bash
+# Check auth status
+ssh gregor@209.38.195.208 'gh auth status'
+
+# Example: Create issue from nightshift
+ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && gh issue create --title "..." --body "..."'
+```
+
+**Authenticated as:** `plur9` (SSH protocol)
 
 ## Troubleshooting
 
@@ -143,20 +165,27 @@ If tasks fail due to rate limits:
 | Service files | `/etc/systemd/system/nightshift-*.service` |
 | Timer files | `/etc/systemd/system/nightshift-*.timer` |
 | Environment | `/home/gregor/config/nightshift.env` |
-| Task outputs | `/home/gregor/Data/1-datafund/0-inbox/` |
+| Personal outputs | `/home/gregor/Data/0-personal/0-inbox/` |
+| Team outputs | `/home/gregor/Data/1-datafund/0-inbox/` |
 | Logs | `journalctl -u nightshift-*` |
 
 ## Current Status
 
-**Deployed (2025-12-13):**
+**Deployed (2025-12-20):**
 - [x] Systemd timers installed and running
 - [x] Scheduler CLI functional
 - [x] Git access to private repos (datafund-space)
 - [x] Environment configured (API key)
+- [x] GitHub CLI (`gh`) installed and authenticated
+- [x] Personal space (0-personal) as self-hosted repo
 
 **Timers Active:**
 - `nightshift-overnight.timer` - midnight + 6am UTC
 - `nightshift-today.timer` - 7am UTC
+
+**Repository Architecture:**
+- 0-personal: Server is origin (self-hosted, no GitHub)
+- Team spaces: GitHub origins (1-datafund, 2-datacore)
 
 ## See Also
 
