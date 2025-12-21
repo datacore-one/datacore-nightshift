@@ -96,7 +96,7 @@ def execute_task(task: OrgTask, data_dir: Path, context: str = "") -> ExecutionR
         # Using -p for print mode (non-interactive)
         # 30 minute timeout for agent-based tasks (complex research can take time)
         result = subprocess.run(
-            ['claude', '-p', prompt],
+            ['claude', '-p', '--dangerously-skip-permissions', prompt],
             cwd=data_dir,
             capture_output=True,
             text=True,
@@ -145,7 +145,7 @@ def execute_command(command: str, data_dir: Path) -> ExecutionResult:
 
     try:
         result = subprocess.run(
-            ['claude', '-p', command],
+            ['claude', '-p', '--dangerously-skip-permissions', command],
             cwd=data_dir,
             capture_output=True,
             text=True,
