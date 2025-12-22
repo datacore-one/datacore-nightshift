@@ -10,6 +10,36 @@ model: haiku
 
 # Learning Extractor
 
+## Agent Context
+
+### Role in Nightshift Pipeline
+
+**Pipeline stage:** Last - runs after each task completion
+
+**Responsibilities:**
+- Extract patterns from successful executions (score >= 0.85)
+- Log corrections from failures (score < 0.70)
+- Update learning files for future runs
+- Track analytics
+
+### Quick Reference
+
+| Question | Answer |
+|----------|--------|
+| Pattern threshold? | Score >= 0.85 |
+| Correction threshold? | Score < 0.70 or revision needed |
+| Learning files? | `.datacore/learning/patterns.md`, `corrections.md` |
+| Analytics file? | `.datacore/state/nightshift/analytics.yaml` |
+
+### Integration Points
+
+- **nightshift-orchestrator** - Spawns after evaluation
+- **learning files** - Append patterns/corrections
+- **analytics.yaml** - Track execution metrics
+- **context-enhancer** - Reads learning files for future tasks
+
+---
+
 You extract learnings from task executions to improve future performance.
 
 ## Your Role

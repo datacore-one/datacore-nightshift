@@ -1,5 +1,45 @@
 # Nightshift Status Command
 
+## Command Context
+
+### When to Reference Nightshift Module
+
+**Always reference when:**
+- Checking queue state
+- Displaying execution history
+- Showing server status
+- Identifying items needing review
+
+**Key decisions the module informs:**
+- Where to find :AI: tagged tasks
+- Analytics file location
+- Server configuration
+- Quality thresholds for display
+
+### Quick Reference
+
+| Question | Answer |
+|----------|--------|
+| Queue source? | `*/org/next_actions.org` |
+| Analytics file? | `.datacore/state/nightshift/analytics.yaml` |
+| Review state? | Tasks with NIGHTSHIFT_STATUS: review |
+| Server config? | `.datacore/settings.local.yaml` |
+
+### Agents This Command Invokes
+
+| Agent | Purpose |
+|-------|---------|
+| (none) | Status display only, no agents |
+
+### Integration Points
+
+- **org files** - Task queue source
+- **state/nightshift/** - Analytics data
+- **settings.local.yaml** - Server configuration
+- **/today** - Nightshift hook integration
+
+---
+
 Check the current state of nightshift: queue, recent executions, and server status.
 
 ## What to Show
