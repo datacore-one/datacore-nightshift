@@ -1,5 +1,36 @@
 # Nightshift Hook: /today Integration
 
+## Command Context
+
+### When to Reference Nightshift Module
+
+**Always reference when:**
+- Generating daily briefing section
+- Parsing nightshift summary files
+- Displaying review items
+
+**Key decisions the module informs:**
+- Summary file location pattern
+- Frontmatter fields to extract
+- Display thresholds
+
+### Quick Reference
+
+| Question | Answer |
+|----------|--------|
+| Summary location? | `[space]/0-inbox/nightshift-summary-*.md` |
+| Key metrics? | total, approved, review, failed |
+| Skip threshold? | No runs in 24h |
+| Hook trigger? | Called by /today |
+
+### Integration Points
+
+- **/today** - Triggers this hook
+- **0-inbox/** - Summary file location
+- **nightshift-orchestrator** - Creates summaries
+
+---
+
 This hook adds nightshift results to the daily briefing.
 
 ## Trigger
