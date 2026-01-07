@@ -80,12 +80,16 @@ Run `/today` in the morning to see:
 
 ### Domain (By Task Type)
 
-| Persona | Focus | Invoked For |
-|---------|-------|-------------|
-| Mark Twain | Clarity, brevity | `:AI:content:` |
-| Bezos | Customer obsession | Strategy tasks |
-| Popper | Falsifiability | `:AI:research:` |
-| Tufte | Data clarity | `:AI:data:` |
+| Category | Personas | Focus |
+|----------|----------|-------|
+| **Writing** | Hemingway, Twain, Orwell | Clarity, voice, propaganda detection |
+| **Business** | Bezos, Buffett, Musk | Customer focus, risk, moonshots |
+| **Science** | Feynman, Dijkstra, Popper, Kahneman, Taleb | First principles, rigor, bias |
+| **Philosophy** | Socrates, Aurelius | Assumptions, stoic practicality |
+| **Presentation** | Tufte | Data visualization, information design |
+| **Fictional** | Picard, Data | Leadership ethics, pure logic |
+
+Evaluators are auto-selected based on task type (`:AI:content:`, `:AI:research:`, etc.)
 
 ## Configuration
 
@@ -147,11 +151,14 @@ status: approved
 | State | Meaning |
 |-------|---------|
 | `TODO` | Not queued |
-| `NEXT` | Queued for nightshift |
-| `WORKING` | Currently executing |
+| `NEXT` | Marked for next execution batch |
+| `QUEUED` | In nightshift queue, waiting |
+| `EXECUTING` | Currently being processed |
 | `DONE` | Completed and approved |
-| `REVIEW` | Needs human review |
+| `REVIEW` | Needs human review (score below threshold) |
 | `FAILED` | Execution failed |
+
+State flow: `TODO` → `NEXT` → `QUEUED` → `EXECUTING` → `DONE/REVIEW/FAILED`
 
 ## Commands
 
@@ -189,6 +196,10 @@ Single branch (main), atomic operations:
 - [DIP-0011](../../dips/DIP-0011-nightshift-module.md) - Full specification
 - [DIP-0009](../../dips/DIP-0009-gtd-specification.md) - GTD task states
 - [DIP-0004](../../dips/DIP-0004-knowledge-database.md) - Knowledge database
+
+## Version History
+
+- **v0.1.0** - Initial release: Queue optimization, evaluation panel, QUEUED/EXECUTING states, server execution, 20+ evaluator personas
 
 ## License
 
