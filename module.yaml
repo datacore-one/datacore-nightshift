@@ -13,7 +13,7 @@ dependencies:
   - core@>=1.0.0
 
 provides:
-  commands:
+  skills:
     - nightshift-status  # Check queue, executions, server status
   agents:
     # Core orchestration
