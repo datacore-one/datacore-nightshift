@@ -36,7 +36,7 @@ class OrgTask:
         """Get the space from SPACE property or file path."""
         if 'SPACE' in self.properties:
             return self.properties['SPACE']
-        # Infer from path (e.g., 1-datafund/org/next_actions.org -> 1-datafund)
+        # Infer from path (e.g., 1-teamspace/org/next_actions.org -> 1-teamspace)
         parts = self.file_path.parts
         for part in parts:
             if re.match(r'^\d+-', part):

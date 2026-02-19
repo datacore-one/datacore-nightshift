@@ -13,20 +13,20 @@
 #   ssh root@<droplet-ip> 'bash -s' < 01-droplet-setup.sh
 #
 # IMPORTANT: Run this as root on first connection. After completion,
-# you will only be able to connect as the 'deploy' or 'gregor' user.
+# you will only be able to connect as the 'deploy' or 'admin' user.
 # =============================================================================
 
 set -e
 
 # Configuration
 DEPLOY_USER="deploy"
-ADMIN_USER="gregor"
+ADMIN_USER="admin"
 SSH_PORT="22"
-DATA_REPO="git@github.com:gregregoryo/Data.git"
+DATA_REPO="git@github.com:your-username/Data.git"
 
 # Admin SSH public keys
-ADMIN_SSH_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC6xOraJQU40sUxUAfFrnFT8180l5CNG6Ld92JKbviXTQRxJnZsH3015GDIBrnBFJP1saLcRstjzOKS8Kqvsy6YwhNzbTbSw1U1UlDziuiiNes+tHHNsbIIYy7jrxOVr+73hGBfWUsuZ8nczoRlZHAapP8O6YV8QSREpyXJh1P/v6x7ejm9ufstOv/DrWtEXGFv8dBxpN/29WnVQd6jZfWg2xB2CQNr2gzFpFnCFZzsTTyDuF2MYEr6xl6WG13KH3ZDzm+sevAA3s8m94BoR1xx81O6W+WXGpth3ND9HI03zv4CP3KQ0SrulLu+6FT/Bkw2JDHzgJ9apUiYfeWrXDEKmA0WfveBufHcxQe7kdZp5j9CLNbaD9JA/IWIaNqlLt0FlHv5k9etq7+1pxbjaDJXLMYFXp0J0T/W5h+rptSiVZJLI+p5AWi/BVo6mm4xnokDKOsn2Gwcr+uZaejhmtayOsmwK7S0IlICavWk9lDGQSvyBqrzgnxJqkR2Ess1nhURCr1tBW8yx6o2pOVghJx2iCPrekW+2edCKOoADDCnenPjwYwvuSey5owXi8vaHN/M5RBew3JszDh8TEkLVK4mecVhkN0+AZdO6sL+ICpKrBOpXRDLReeCOaTy5xfE0uTAt7AOSv9/ohCnM+sROfzJ4TrW6/H7/72BrfmaPWcBpw== gregor@plur.si"
-ADMIN_SSH_KEY_ED25519="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMfqcXvUDBW73uMba/+Ha4Zm6i+YwqIP2VSQT5rmXJT8 gregor@ethswarm.org"
+ADMIN_SSH_KEY="ssh-rsa YOUR_RSA_PUBLIC_KEY_HERE user@example.com"
+ADMIN_SSH_KEY_ED25519="ssh-ed25519 YOUR_ED25519_PUBLIC_KEY_HERE user@example.com"
 
 # Deploy key (for git operations)
 DEPLOY_KEY_PUB="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa6oK6ES9dZZhI6orsfm+AtioToscoJinNjJ3QiFyUU datacore-deploy"
@@ -124,7 +124,7 @@ X11Forwarding no
 AllowAgentForwarding yes
 AllowTcpForwarding no
 LogLevel VERBOSE
-AllowUsers deploy gregor
+AllowUsers deploy admin
 EOF
 
 if sshd -t; then
@@ -288,7 +288,7 @@ echo "=========================================="
 echo ""
 echo "1. TEST SSH ACCESS (from another terminal):"
 echo "   ssh deploy@$(curl -s ifconfig.me)"
-echo "   ssh gregor@$(curl -s ifconfig.me)"
+echo "   ssh admin@$(curl -s ifconfig.me)"
 echo ""
 echo "2. COPY DEPLOY KEY (from local machine):"
 echo "   scp ~/.datacore/env/credentials/deploy_key deploy@$(curl -s ifconfig.me):~/.ssh/deploy_key"
@@ -316,5 +316,5 @@ echo "6. VERIFY TIMERS:"
 echo "   systemctl list-timers | grep nightshift"
 echo ""
 echo "WARNING: Root login is now DISABLED."
-echo "Make sure you can login as 'deploy' or 'gregor' before closing this session!"
+echo "Make sure you can login as 'deploy' or 'admin' before closing this session!"
 echo ""

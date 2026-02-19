@@ -12,11 +12,11 @@ Nightshift processes `:AI:` tagged tasks autonomously, applying multi-perspectiv
 
 | Property | Value |
 |----------|-------|
-| IP | `209.38.195.208` |
-| User | `gregor` |
-| SSH | `ssh gregor@209.38.195.208` |
-| Data path | `/home/gregor/Data` |
-| Config | `/home/gregor/config/nightshift.env` |
+| IP | `your-server-ip` |
+| User | `deploy` |
+| SSH | `ssh user@your-server-ip` |
+| Data path | `/home/deploy/Data` |
+| Config | `/home/deploy/config/nightshift.env` |
 
 ### Systemd Timers
 
@@ -29,30 +29,30 @@ Nightshift processes `:AI:` tagged tasks autonomously, applying multi-perspectiv
 
 ```bash
 # Check timer status
-ssh gregor@209.38.195.208 'systemctl list-timers | grep nightshift'
+ssh user@your-server-ip 'systemctl list-timers | grep nightshift'
 
 # View recent logs
-ssh gregor@209.38.195.208 'journalctl -u nightshift-overnight.service --since today'
+ssh user@your-server-ip 'journalctl -u nightshift-overnight.service --since today'
 
 # Manual trigger
-ssh gregor@209.38.195.208 'sudo systemctl start nightshift-overnight.service'
+ssh user@your-server-ip 'sudo systemctl start nightshift-overnight.service'
 
 # Check nightshift status
-ssh gregor@209.38.195.208 'cd ~/Data && ./.datacore/modules/nightshift/nightshift status'
+ssh user@your-server-ip 'cd ~/Data && ./.datacore/modules/nightshift/nightshift status'
 ```
 
 ### Repo Architecture (Critical)
 
 Server has SEPARATE repos (not nested):
-- `/home/gregor/Data` - Main datacore repo
-- `/home/gregor/Data/1-datafund` - Separate datafund-space repo (cloned independently)
+- `/home/deploy/Data` - Main datacore repo
+- `/home/deploy/Data/1-teamspace` - Separate team-space repo (cloned independently)
 
-This matches local architecture. If 1-datafund is part of main repo (gitignored), outputs won't sync.
+This matches local architecture. If 1-teamspace is part of main repo (gitignored), outputs won't sync.
 
 ```bash
 # Verify repos are separate
-ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git remote -v'
-# Should show: github.com:datacore-one/datafund-space.git
+ssh user@your-server-ip 'cd ~/Data/1-teamspace && git remote -v'
+# Should show: github.com:datacore-one/team-space.git
 ```
 
 ## CLI Commands
@@ -103,15 +103,15 @@ All outputs go to `[space]/0-inbox/nightshift-{id}-{type}.md`
 
 ### Tasks Not Executing
 
-1. Check timers: `ssh gregor@209.38.195.208 'systemctl list-timers | grep nightshift'`
-2. Check logs: `ssh gregor@209.38.195.208 'journalctl -u nightshift-overnight.service -n 50'`
-3. Check API key: `ssh gregor@209.38.195.208 'grep ANTHROPIC ~/config/nightshift.env'`
+1. Check timers: `ssh user@your-server-ip 'systemctl list-timers | grep nightshift'`
+2. Check logs: `ssh user@your-server-ip 'journalctl -u nightshift-overnight.service -n 50'`
+3. Check API key: `ssh user@your-server-ip 'grep ANTHROPIC ~/config/nightshift.env'`
 
 ### Outputs Not Syncing
 
-1. Verify server pushed: `ssh gregor@209.38.195.208 'cd ~/Data/1-datafund && git log --oneline -3'`
-2. Pull locally: `cd ~/Data/1-datafund && git pull`
-3. Verify 1-datafund is separate repo on server (not part of main repo)
+1. Verify server pushed: `ssh user@your-server-ip 'cd ~/Data/1-teamspace && git log --oneline -3'`
+2. Pull locally: `cd ~/Data/1-teamspace && git pull`
+3. Verify 1-teamspace is separate repo on server (not part of main repo)
 
 ### Rate Limits
 

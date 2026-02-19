@@ -5,12 +5,12 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-User=gregor
-Group=gregor
-WorkingDirectory=/home/gregor/Data
+User=deploy
+Group=deploy
+WorkingDirectory=/home/deploy/Data
 Environment="PATH=/usr/local/bin:/usr/bin:/bin"
-EnvironmentFile=/home/gregor/config/nightshift.env
-ExecStart=/home/gregor/Data/.datacore/modules/nightshift/nightshift run --command=/today
+EnvironmentFile=/home/deploy/config/nightshift.env
+ExecStart=/home/deploy/Data/.datacore/modules/nightshift/nightshift run --command=/today
 TimeoutStartSec=600
 StandardOutput=journal
 StandardError=journal

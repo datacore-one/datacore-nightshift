@@ -181,7 +181,7 @@ Nightshift can run:
 ### Space Isolation
 
 - Personal server: Can run all spaces
-- Team server: Only runs its space (e.g., datafund server only runs 1-datafund)
+- Team server: Only runs its space (e.g., team server only runs 1-teamspace)
 
 ## Git Protocol
 

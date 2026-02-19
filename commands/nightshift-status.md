@@ -55,8 +55,8 @@ Tasks pending: 3
 
 | # | Space | Task | Type | Priority |
 |---|-------|------|------|----------|
-| 1 | datafund | Research competitor X | :AI:research: | A |
-| 2 | datafund | Draft blog post | :AI:content: | B |
+| 1 | teamspace | Research competitor X | :AI:research: | A |
+| 2 | teamspace | Draft blog post | :AI:content: | B |
 | 3 | personal | Organize reading list | :AI: | C |
 
 Estimated: ~45 min, $0.35
@@ -85,15 +85,15 @@ If server is configured, check status:
 ```
 SERVER STATUS
 ─────────────
-Personal server: nightshift.gregor.io
+Personal server: nightshift.example.com
   Status: ONLINE
   Last run: 2025-12-10 02:15
   Next scheduled: 2025-12-11 00:00
 
-Datafund server: nightshift.datafund.io
+Team server: nightshift.team.example.com
   Status: ONLINE
   Last run: 2025-12-10 02:30
-  Spaces: 1-datafund only
+  Spaces: 1-teamspace only
 ```
 
 If no server configured:
@@ -126,7 +126,7 @@ NEEDS REVIEW
 ────────────
 1. Blog post draft (score: 0.68)
    Reason: Evaluator disagreement on tone
-   Output: 1-datafund/0-inbox/nightshift-003-content.md
+   Output: 1-teamspace/0-inbox/nightshift-003-content.md
 ```
 
 ## Conversational Flow

@@ -96,8 +96,8 @@ queue:
   tasks:
     - id: "task-001"
       heading: "Research competitor X"
-      space: "1-datafund"
-      file: "1-datafund/org/next_actions.org"
+      space: "1-teamspace"
+      file: "1-teamspace/org/next_actions.org"
       line: 45
       tag: ":AI:research:"
       priority: "A"
@@ -113,7 +113,7 @@ queue:
 
     - id: "task-002"
       heading: "Draft blog post about X"
-      space: "1-datafund"
+      space: "1-teamspace"
       tag: ":AI:content:"
       scores:
         composite: 6.8
@@ -150,7 +150,7 @@ queue:
 
 ## Space Filtering
 
-If executor has space restrictions (e.g., datafund server), only include tasks from allowed spaces.
+If executor has space restrictions (e.g., team server), only include tasks from allowed spaces.
 
 ## YOU CAN
 
