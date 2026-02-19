@@ -13,20 +13,20 @@
 #   ssh root@<droplet-ip> 'bash -s' < 01-droplet-setup.sh
 #
 # IMPORTANT: Run this as root on first connection. After completion,
-# you will only be able to connect as the 'deploy' or 'gregor' user.
+# you will only be able to connect as the 'deploy' or 'admin' user.
 # =============================================================================
 
 set -e
 
 # Configuration
 DEPLOY_USER="deploy"
-ADMIN_USER="gregor"
+ADMIN_USER="admin"
 SSH_PORT="22"
-DATA_REPO="git@github.com:gregregoryo/Data.git"
+DATA_REPO="git@github.com:your-username/Data.git"
 
 # Admin SSH public keys
-ADMIN_SSH_KEY="ssh-rsa YOUR_RSA_PUBLIC_KEY_BODY_HERE dev@datacore.one"
-ADMIN_SSH_KEY_ED25519="ssh-ed25519 YOUR_ED25519_PUBLIC_KEY_BODY_HERE dev@datacore.one"
+ADMIN_SSH_KEY="ssh-rsa YOUR_RSA_PUBLIC_KEY_HERE user@example.com"
+ADMIN_SSH_KEY_ED25519="ssh-ed25519 YOUR_ED25519_PUBLIC_KEY_HERE user@example.com"
 
 # Deploy key (for git operations)
 DEPLOY_KEY_PUB="ssh-ed25519 YOUR_DEPLOY_PUBLIC_KEY_BODY_HERE datacore-deploy"
@@ -124,7 +124,7 @@ X11Forwarding no
 AllowAgentForwarding yes
 AllowTcpForwarding no
 LogLevel VERBOSE
-AllowUsers deploy gregor
+AllowUsers deploy admin
 EOF
 
 if sshd -t; then
@@ -288,7 +288,7 @@ echo "=========================================="
 echo ""
 echo "1. TEST SSH ACCESS (from another terminal):"
 echo "   ssh deploy@$(curl -s ifconfig.me)"
-echo "   ssh deploy@$(curl -s ifconfig.me)"
+echo "   ssh admin@$(curl -s ifconfig.me)"
 echo ""
 echo "2. COPY DEPLOY KEY (from local machine):"
 echo "   scp ~/.datacore/env/credentials/deploy_key deploy@$(curl -s ifconfig.me):~/.ssh/deploy_key"
@@ -316,5 +316,5 @@ echo "6. VERIFY TIMERS:"
 echo "   systemctl list-timers | grep nightshift"
 echo ""
 echo "WARNING: Root login is now DISABLED."
-echo "Make sure you can login as 'deploy' or 'gregor' before closing this session!"
+echo "Make sure you can login as 'deploy' or 'admin' before closing this session!"
 echo ""

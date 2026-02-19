@@ -99,7 +99,7 @@ context_package:
   task_id: "exec-2025-12-10-001"
   task: "Research competitor X pricing strategies"
   task_type: ":AI:research:"
-  space: "1-datafund"
+  space: "1-teamspace"
 
   # From RAG search
   semantic_matches:
@@ -119,7 +119,7 @@ context_package:
   connected_concepts:
     - "[[Pricing Models]]"
     - "[[Data Marketplace Competitors]]"
-    - "[[Verity Positioning]]"
+    - "[[Project Alpha Positioning]]"
 
   # From learning files
   applicable_patterns:
@@ -143,7 +143,7 @@ context_package:
   # From recent journals
   recent_context:
     - date: "2025-12-09"
-      content: "Discussed Verity pricing with team, leaning toward usage-based"
+      content: "Discussed Project Alpha pricing with team, leaning toward usage-based"
     - date: "2025-12-08"
       content: "Investor asked about competitive moat"
 

@@ -125,7 +125,7 @@ def get_nightshift_summary(data_dir: Path, space: str) -> dict:
 **Tasks**: 12 (8 approved, 3 review, 1 failed)
 
 **Needs Review:**
-- [ ] 6-month Verity roadmap (0.55) → [[nightshift-exec-2025-12-12-003245-task.md]]
+- [ ] 6-month Project Alpha roadmap (0.55) → [[nightshift-exec-2025-12-12-003245-task.md]]
 - [ ] Data standardization research (0.62) → [[nightshift-exec-2025-12-12-004521-task.md]]
 
 **Ready to Process:**

@@ -12,9 +12,9 @@ Nightshift processes `:AI:` tagged tasks autonomously, applying multi-perspectiv
 
 | Property | Value |
 |----------|-------|
-| IP | `YOUR_SERVER_IP` |
+| IP | `your-server-ip` |
 | User | `deploy` |
-| SSH | `ssh deploy@YOUR_SERVER_IP` |
+| SSH | `ssh user@your-server-ip` |
 | Data path | `/home/deploy/Data` |
 | Config | `/home/deploy/config/nightshift.env` |
 
@@ -29,30 +29,30 @@ Nightshift processes `:AI:` tagged tasks autonomously, applying multi-perspectiv
 
 ```bash
 # Check timer status
-ssh deploy@YOUR_SERVER_IP 'systemctl list-timers | grep nightshift'
+ssh user@your-server-ip 'systemctl list-timers | grep nightshift'
 
 # View recent logs
-ssh deploy@YOUR_SERVER_IP 'journalctl -u nightshift-overnight.service --since today'
+ssh user@your-server-ip 'journalctl -u nightshift-overnight.service --since today'
 
 # Manual trigger
-ssh deploy@YOUR_SERVER_IP 'sudo systemctl start nightshift-overnight.service'
+ssh user@your-server-ip 'sudo systemctl start nightshift-overnight.service'
 
 # Check nightshift status
-ssh deploy@YOUR_SERVER_IP 'cd ~/Data && ./.datacore/modules/nightshift/nightshift status'
+ssh user@your-server-ip 'cd ~/Data && ./.datacore/modules/nightshift/nightshift status'
 ```
 
 ### Repo Architecture (Critical)
 
 Server has SEPARATE repos (not nested):
 - `/home/deploy/Data` - Main datacore repo
-- `/home/deploy/Data/1-datafund` - Separate datafund-space repo (cloned independently)
+- `/home/deploy/Data/1-teamspace` - Separate team-space repo (cloned independently)
 
-This matches local architecture. If 1-datafund is part of main repo (gitignored), outputs won't sync.
+This matches local architecture. If 1-teamspace is part of main repo (gitignored), outputs won't sync.
 
 ```bash
 # Verify repos are separate
-ssh deploy@YOUR_SERVER_IP 'cd ~/Data/1-datafund && git remote -v'
-# Should show: github.com:datacore-one/datafund-space.git
+ssh user@your-server-ip 'cd ~/Data/1-teamspace && git remote -v'
+# Should show: github.com:datacore-one/team-space.git
 ```
 
 ## CLI Commands
@@ -103,15 +103,15 @@ All outputs go to `[space]/0-inbox/nightshift-{id}-{type}.md`
 
 ### Tasks Not Executing
 
-1. Check timers: `ssh deploy@YOUR_SERVER_IP 'systemctl list-timers | grep nightshift'`
-2. Check logs: `ssh deploy@YOUR_SERVER_IP 'journalctl -u nightshift-overnight.service -n 50'`
-3. Check API key: `ssh deploy@YOUR_SERVER_IP 'grep ANTHROPIC ~/config/nightshift.env'`
+1. Check timers: `ssh user@your-server-ip 'systemctl list-timers | grep nightshift'`
+2. Check logs: `ssh user@your-server-ip 'journalctl -u nightshift-overnight.service -n 50'`
+3. Check API key: `ssh user@your-server-ip 'grep ANTHROPIC ~/config/nightshift.env'`
 
 ### Outputs Not Syncing
 
-1. Verify server pushed: `ssh deploy@YOUR_SERVER_IP 'cd ~/Data/1-datafund && git log --oneline -3'`
-2. Pull locally: `cd ~/Data/1-datafund && git pull`
-3. Verify 1-datafund is separate repo on server (not part of main repo)
+1. Verify server pushed: `ssh user@your-server-ip 'cd ~/Data/1-teamspace && git log --oneline -3'`
+2. Pull locally: `cd ~/Data/1-teamspace && git pull`
+3. Verify 1-teamspace is separate repo on server (not part of main repo)
 
 ### Rate Limits
 

@@ -254,11 +254,11 @@ def write_summary_file(
 if __name__ == '__main__':
     # Test summary generation
     completed = [
-        {'title': 'Research competitor X', 'space': '1-datafund', 'score': 0.93, 'output_path': '/path/nightshift-001.md'},
-        {'title': 'Draft product roadmap', 'space': '1-datafund', 'score': 0.94, 'output_path': '/path/nightshift-002.md'},
+        {'title': 'Research competitor X', 'space': '1-teamspace', 'score': 0.93, 'output_path': '/path/nightshift-001.md'},
+        {'title': 'Draft product roadmap', 'space': '1-teamspace', 'score': 0.94, 'output_path': '/path/nightshift-002.md'},
     ]
     review = [
-        {'title': 'Create 6-month roadmap', 'space': '1-datafund', 'score': 0.55, 'output_path': '/path/nightshift-003.md'},
+        {'title': 'Create 6-month roadmap', 'space': '1-teamspace', 'score': 0.55, 'output_path': '/path/nightshift-003.md'},
     ]
     failed = [
         {'title': 'Send email to partner', 'space': '0-personal', 'error': 'No email credentials'},
