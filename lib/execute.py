@@ -22,74 +22,104 @@ class ExecutionResult:
     duration_seconds: float = 0
 
 
-def build_task_prompt(task: OrgTask, context: str = "") -> str:
-    """
-    Build the prompt for Claude to execute this task.
+def determine_agent_type(task: OrgTask) -> str:
+    """Map :AI:subtype: tag to agent name.
 
-    Uses specialized agents based on task type:
-    - :AI:research: → gtd-research-processor agent
-    - :AI:content: → gtd-content-writer agent
-    - :AI:pm: → gtd-project-manager agent
-    - :AI:data: → gtd-data-analyzer agent
-    - :AI: (general) → ai-task-executor agent
+    Tags are parsed as split-by-colon list, so :AI:pm: becomes ['AI', 'pm'].
+    We look for 'AI' in tags, then check the tag immediately following it
+    for the subtype.
     """
-    prompt_parts = []
-
-    # Agent mapping
-    agent_map = {
-        ':AI:research:': 'gtd-research-processor',
-        ':AI:content:': 'gtd-content-writer',
-        ':AI:pm:': 'gtd-project-manager',
-        ':AI:data:': 'gtd-data-analyzer',
-        ':AI:code:': None,  # No specialized code agent yet
-        ':AI:': 'ai-task-executor',
+    subtype_map = {
+        'research': 'research-orchestrator',
+        'content': 'gtd-content-writer',
+        'pm': 'gtd-project-manager',
+        'data': 'gtd-data-analyzer',
+        'code': 'ai-task-executor',
     }
+    tags = task.tags
+    if 'AI' in tags:
+        ai_idx = tags.index('AI')
+        # Check if there's a subtype tag after AI
+        if ai_idx + 1 < len(tags):
+            subtype = tags[ai_idx + 1]
+            return subtype_map.get(subtype, 'ai-task-executor')
+    return 'ai-task-executor'
 
-    tag = task.ai_tag or ':AI:'
-    agent = agent_map.get(tag, 'ai-task-executor')
 
-    # Instruction to use the specialized agent
-    prompt_parts.append(f"Execute this task using the Task tool with subagent_type='{agent}':")
-    prompt_parts.append("")
+def build_task_prompt(task: OrgTask, data_dir: str = "", engram_text: str = "") -> str:
+    """
+    Build execution prompt from Rich Task Standard properties (DIP-0009 Part 3.5).
 
-    # Task details
-    prompt_parts.append(f"# Task: {task.title}")
-    prompt_parts.append(f"Task ID: {task.id}")
-    prompt_parts.append(f"Type: {task.ai_tag}")
-    prompt_parts.append("")
+    Reads CONTEXT, KEY_FILES, CURRENT_STATUS, ACCEPTANCE_CRITERIA, TOOLS, ROLE
+    from task properties. Sections with no content are omitted.
+    """
+    sections = []
 
-    # Task body if present
+    # 1. Agent routing preamble (always present)
+    agent_type = determine_agent_type(task)
+    sections.append(f"Execute this task using the Task tool with subagent_type='{agent_type}'.")
+    if data_dir:
+        sections.append(f"Working directory: {data_dir}")
+
+    # 2. Role (optional)
+    role = task.properties.get('ROLE', '').strip()
+    if role:
+        sections.append(f"# Role\n{role}")
+
+    # 3. Task heading + metadata
+    effort = task.properties.get('EFFORT', 'Unknown')
+    tags_str = ', '.join(task.tags) if task.tags else 'none'
+    meta = f"# Task: {task.title}\nTask ID: {task.id}  |  Effort: {effort}  |  Tags: {tags_str}"
+    sections.append(meta)
+
+    # 4-8. Rich context sections (omit if empty)
+    for prop, heading in [
+        ('CONTEXT', 'Context'),
+        ('CURRENT_STATUS', 'Current Status'),
+        ('KEY_FILES', 'Key Files to Read'),
+        ('ACCEPTANCE_CRITERIA', 'Acceptance Criteria'),
+        ('TOOLS', 'Approach'),
+    ]:
+        val = task.properties.get(prop, '').strip()
+        if val:
+            sections.append(f"## {heading}\n{val}")
+
+    # 9. Engrams (runtime-resolved, passed in by execute_task)
+    if engram_text:
+        sections.append(f"## Applicable Engrams\n{engram_text}")
+
+    # 10. Task body
     if task.body:
-        prompt_parts.append("## Task Description")
-        prompt_parts.append(task.body)
-        prompt_parts.append("")
+        sections.append(f"## Task Body\n{task.body}")
 
-    # Context if provided
-    if context:
-        prompt_parts.append("## Context")
-        prompt_parts.append(context)
-        prompt_parts.append("")
-
-    # Output requirements
-    prompt_parts.append("## Requirements")
-    prompt_parts.append("- Use the specialized agent to complete this task")
-    prompt_parts.append("- Write the output to a markdown file in the appropriate 0-inbox/ directory")
-    prompt_parts.append("- Return the path to the output file when done")
-
-    return '\n'.join(prompt_parts)
+    return '\n\n'.join(sections)
 
 
 def execute_task(task: OrgTask, data_dir: Path, context: str = "") -> ExecutionResult:
     """
     Execute a task using Claude CLI.
 
+    Reads Rich Task Standard properties and injects runtime engrams.
     Returns ExecutionResult with output or error.
     """
     import time
     start_time = time.time()
 
-    # Build prompt
-    prompt = build_task_prompt(task, context)
+    # Runtime engram injection (DIP-0019)
+    engram_text = ''
+    try:
+        import sys
+        lib_dir = str(Path(__file__).parent.parent.parent.parent / 'lib')
+        if lib_dir not in sys.path:
+            sys.path.insert(0, lib_dir)
+        from engram_selector import select_engrams, format_injection
+        engrams = select_engrams(scope='global', task_desc=task.title, limit=5)
+        engram_text = format_injection(engrams, limit=5)
+    except (ImportError, Exception):
+        pass  # Engram injection is optional; degrade gracefully
+
+    # Build prompt with Rich Task Standard properties
+    prompt = build_task_prompt(task, data_dir=str(data_dir), engram_text=engram_text)
 
     try:
         # Run Claude CLI with the prompt
