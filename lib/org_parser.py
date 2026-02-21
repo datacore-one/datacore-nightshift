@@ -75,6 +75,7 @@ def parse_org_file(file_path: Path) -> List[OrgTask]:
 
             # Parse properties drawer
             properties = {}
+            accumulating = None  # Track multiline property accumulation
             body_lines = []
             j = i + 1
             in_properties = False
@@ -99,7 +100,19 @@ def parse_org_file(file_path: Path) -> List[OrgTask]:
                 if in_properties:
                     prop_match = re.match(r'^:(\w+):\s*(.*)$', next_line.strip())
                     if prop_match:
-                        properties[prop_match.group(1)] = prop_match.group(2)
+                        current_prop = prop_match.group(1)
+                        current_val = prop_match.group(2)
+                        if current_val.strip() == '|':
+                            # Multiline property — accumulate continuation lines
+                            properties[current_prop] = ''
+                            accumulating = current_prop
+                        else:
+                            properties[current_prop] = current_val
+                            accumulating = None
+                    elif accumulating:
+                        # Continuation line for multiline property
+                        properties[accumulating] += next_line.rstrip() + '\n'
+                    # else: non-property, non-continuation line inside drawer — skip
                 else:
                     body_lines.append(next_line)
 
@@ -147,6 +160,10 @@ def find_ai_tasks(
 
     # Search in all org files
     for org_file in data_dir.rglob('*.org'):
+        # Skip directories that happen to match *.org (e.g., golang.org)
+        if not org_file.is_file():
+            continue
+
         # Skip archive files
         if 'archive' in str(org_file).lower():
             continue
@@ -198,27 +215,46 @@ def update_task_property(task: OrgTask, prop_name: str, prop_value: str) -> str:
             # Hit next heading, no properties drawer
             break
 
+    # Format the property value (single-line or multiline)
+    if '\n' in prop_value:
+        # Multiline: write with | continuation
+        formatted_lines = [f':{prop_name}: |']
+        for line in prop_value.split('\n'):
+            formatted_lines.append(f'  {line}')
+    else:
+        formatted_lines = [f':{prop_name}: {prop_value}']
+
     if properties_start is not None and properties_end is not None:
-        # Check if property already exists
+        # Check if property already exists (may span multiple lines if multiline)
         prop_line_idx = None
+        prop_end_idx = None
         for i in range(properties_start + 1, properties_end):
             if lines[i].strip().startswith(f':{prop_name}:'):
                 prop_line_idx = i
+                # Check if it's a multiline property (value is exactly "|")
+                val_match = re.match(r'^:(\w+):\s*(.*)$', lines[i].strip())
+                if val_match and val_match.group(2).strip() == '|':
+                    # Find end of continuation lines
+                    prop_end_idx = i + 1
+                    while prop_end_idx < properties_end:
+                        next_stripped = lines[prop_end_idx].strip()
+                        if re.match(r'^:(\w+):\s*(.*)$', next_stripped) or next_stripped == ':END:':
+                            break
+                        prop_end_idx += 1
+                else:
+                    prop_end_idx = i + 1
                 break
 
         if prop_line_idx is not None:
-            # Update existing property
-            lines[prop_line_idx] = f':{prop_name}: {prop_value}'
+            # Replace existing property (single or multiline)
+            lines[prop_line_idx:prop_end_idx] = formatted_lines
         else:
             # Add new property before :END:
-            lines.insert(properties_end, f':{prop_name}: {prop_value}')
+            for j, new_line in enumerate(formatted_lines):
+                lines.insert(properties_end + j, new_line)
     else:
         # Create new properties drawer
-        new_lines = [
-            ':PROPERTIES:',
-            f':{prop_name}: {prop_value}',
-            ':END:'
-        ]
+        new_lines = [':PROPERTIES:'] + formatted_lines + [':END:']
         insert_idx = heading_line_idx + 1
         for j, new_line in enumerate(new_lines):
             lines.insert(insert_idx + j, new_line)
