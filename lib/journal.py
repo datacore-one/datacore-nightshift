@@ -7,14 +7,24 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any
 
-from org_parser import OrgTask
+from nightshift_parser import OrgTask
 from evaluate import EvaluationResult
 
 
 def get_journal_path(data_dir: Path, space: str = '0-personal') -> Path:
-    """Get the journal file path for today."""
+    """Get the journal file path for today.
+
+    Detects journal directory: notes/journals/ if it exists, otherwise journal/.
+    """
     today = datetime.now().strftime('%Y-%m-%d')
-    journal_dir = data_dir / space / 'notes' / 'journals'
+    notes_journals = data_dir / space / 'notes' / 'journals'
+    plain_journal = data_dir / space / 'journal'
+    if notes_journals.exists():
+        journal_dir = notes_journals
+    elif plain_journal.exists():
+        journal_dir = plain_journal
+    else:
+        journal_dir = notes_journals  # default for new spaces
     journal_dir.mkdir(parents=True, exist_ok=True)
     return journal_dir / f'{today}.md'
 

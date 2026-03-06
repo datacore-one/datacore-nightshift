@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional
 
-from org_parser import OrgTask, update_task_property, update_task_state, write_org_file
+from nightshift_parser import OrgTask, update_task_property, update_task_state, write_org_file
 
 
 def get_executor_id() -> str:
@@ -253,7 +253,7 @@ def git_commit_push(data_dir: Path, message: str, files: Optional[list] = None) 
 
 if __name__ == '__main__':
     import sys
-    from org_parser import find_ai_tasks
+    from nightshift_parser import find_ai_tasks
 
     if len(sys.argv) < 2:
         print("Usage: python claim.py <data_dir>")

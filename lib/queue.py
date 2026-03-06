@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import List, Optional
 from dataclasses import dataclass
 
-from org_parser import OrgTask, find_ai_tasks
+from nightshift_parser import OrgTask, find_ai_tasks
 
 
 @dataclass
@@ -25,13 +25,15 @@ def calculate_priority(task: OrgTask) -> float:
     Calculate priority score for a task.
     Higher score = higher priority.
 
-    Formula: Impact * 0.4 + Urgency * 0.3 + Readiness * 0.2 + Effort * 0.1
+    Formula: Impact * 0.35 + Urgency * 0.25 + Readiness * 0.20 + Effort * 0.10 + Intent * 0.10
+    Weights sum to 1.0. Intent score from strategic alignment (default 5).
     """
     # Default values (1-10 scale)
     impact = 5
     urgency = 5
     readiness = 5
     effort = 5  # Lower effort = higher priority for this component
+    intent = 5  # Strategic intent alignment (default neutral)
 
     # Get from properties if available
     if 'IMPACT' in task.properties:
@@ -53,6 +55,12 @@ def calculate_priority(task: OrgTask) -> float:
         except ValueError:
             pass
 
+    if 'INTENT_SCORE' in task.properties:
+        try:
+            intent = float(task.properties['INTENT_SCORE'])
+        except ValueError:
+            pass
+
     # Readiness based on state
     if task.state == 'NEXT':
         readiness = 10
@@ -71,12 +79,13 @@ def calculate_priority(task: OrgTask) -> float:
     ai_tag = task.ai_tag or ':AI:'
     multiplier = tag_boost.get(ai_tag, 1.0)
 
-    # Calculate weighted score
+    # Calculate weighted score (weights sum to 1.0)
     score = (
-        impact * 0.4 +
-        urgency * 0.3 +
-        readiness * 0.2 +
-        effort * 0.1
+        impact * 0.35 +
+        urgency * 0.25 +
+        readiness * 0.20 +
+        effort * 0.10 +
+        intent * 0.10
     ) * multiplier
 
     return round(score, 2)
@@ -106,8 +115,9 @@ def build_queue(data_dir: Path, limit: Optional[int] = None, include_pending: bo
     spaces = nightshift_config.get('spaces')
     exclude_spaces = nightshift_config.get('exclude_spaces')
 
-    # Primary: Find QUEUED tasks in nightshift.org (ready for execution)
-    tasks = find_ai_tasks(data_dir, states=['QUEUED'], spaces=spaces, exclude_spaces=exclude_spaces)
+    # Primary: Find QUEUED tasks in nightshift.org only (not source files)
+    all_queued = find_ai_tasks(data_dir, states=['QUEUED'], spaces=spaces, exclude_spaces=exclude_spaces)
+    tasks = [t for t in all_queued if 'nightshift.org' in t.file_path.name]
 
     # Optionally include :AI: tasks from other files that haven't been queued yet
     if include_pending:

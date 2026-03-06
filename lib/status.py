@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-from org_parser import find_ai_tasks
+from nightshift_parser import find_ai_tasks
 
 
 def show_status(data_dir: Path) -> None:

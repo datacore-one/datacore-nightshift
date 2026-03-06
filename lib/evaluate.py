@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 
-from org_parser import OrgTask
+from nightshift_parser import OrgTask
 
 
 # Evaluator selection matrix - which evaluators to run for each task type
@@ -127,7 +127,7 @@ def run_evaluator(
     try:
         # Run Claude CLI with the evaluator prompt
         result = subprocess.run(
-            ['claude', '-p', prompt],
+            ['claude', '-p', '--dangerously-skip-permissions', prompt],
             cwd=data_dir,
             capture_output=True,
             text=True,

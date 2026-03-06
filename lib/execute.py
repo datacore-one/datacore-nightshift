@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
-from org_parser import OrgTask
+from nightshift_parser import OrgTask
 
 
 @dataclass
@@ -222,7 +222,7 @@ def estimate_tokens(text: str) -> int:
 
 if __name__ == '__main__':
     import sys
-    from org_parser import find_ai_tasks
+    from nightshift_parser import find_ai_tasks
 
     if len(sys.argv) < 2:
         print("Usage: python execute.py <data_dir>")

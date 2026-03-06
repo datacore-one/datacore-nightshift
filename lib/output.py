@@ -10,7 +10,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional, Tuple, List
 
-from org_parser import OrgTask
+from nightshift_parser import OrgTask
 from evaluate import EvaluationResult
 
 logger = logging.getLogger(__name__)

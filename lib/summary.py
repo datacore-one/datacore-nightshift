@@ -152,6 +152,20 @@ def generate_summary(
         content_parts.append(f'- [ ] Investigate {len(failed_tasks)} failures')
     content_parts.append('')
 
+    # Append historical context if metrics available
+    try:
+        from metrics import compute_metrics
+        metrics = compute_metrics(Path('.'), 30)
+        if metrics.get('total_tasks', 0) > 0:
+            content_parts.append('## 30-Day Performance')
+            content_parts.append('')
+            content_parts.append(f"- Approval rate: {metrics['approval_rate']}%")
+            content_parts.append(f"- Avg score: {metrics['avg_score']:.2f}")
+            content_parts.append(f"- Total cost: ~${metrics['est_cost_usd']:.2f}")
+            content_parts.append('')
+    except (ImportError, Exception):
+        pass  # metrics.py not available or no data — skip silently
+
     return '\n'.join(content_parts)
 
 
