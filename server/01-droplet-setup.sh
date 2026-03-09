@@ -29,7 +29,7 @@ ADMIN_SSH_KEY="ssh-rsa YOUR_RSA_PUBLIC_KEY_HERE user@example.com"
 ADMIN_SSH_KEY_ED25519="ssh-ed25519 YOUR_ED25519_PUBLIC_KEY_HERE user@example.com"
 
 # Deploy key (for git operations)
-DEPLOY_KEY_PUB="ssh-ed25519 YOUR_DEPLOY_PUBLIC_KEY_BODY_HERE datacore-deploy"
+DEPLOY_KEY_PUB="ssh-ed25519 YOUR_DEPLOY_PUBLIC_KEY_HERE datacore-deploy"
 
 echo "=========================================="
 echo "Nightshift Module - Secure Droplet Setup"
